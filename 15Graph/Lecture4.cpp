@@ -1,40 +1,41 @@
 class Solution {
-  public:
-    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
-        vector<int>path;
-        vector<int>visited(V,0);
-        visited[0] = 1;
-        path.push_back(0);
-        dfs(0,V,adj,visited,path);
-        return path;
-    }
+public:
 
-    void dfs(int vertex,int V,vector<int>adj[],vector<int>&visited,vector<int>&path){
-        for(auto it:adj[vertex]){
-            if(visited[it]==0){
-                visited[it] = 1;
-                path.push_back(it);
-                dfs(it,V,adj,visited,path);
-            }
-        }
-    }
-    
-    vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+    void bfsOfGraph(int vertex,int V,vector<int>&visited,vector<vector<int>>&adj) {
         queue<int> q;
-        vector<int>visited(V,0);
         vector<int>path;
-        q.push(0);
+        q.push(vertex);
+        path.push_back(vertex);
+        visited[vertex] = 1;
         while(!q.empty()){
             int vertex = q.front();
             q.pop();
-            if(visited[vertex]==0){
-                visited[vertex] = 1;
-                path.push_back(vertex);
-                for(auto it:adj[vertex]){
+            for(auto it:adj[vertex]){
+                if(visited[it]==0){
+                    path.push_back(it);
+                    visited[it] = 1;
                     q.push(it);
                 }
             }
         }
-        return path;
+    }
+
+    int countComponents(int n, vector<vector<int>>& edges) {
+        vector<int>visited(n,0);
+        vector<vector<int>>adj(n);
+        for(auto it:edges){
+            int vertex1 = it[0];
+            int vertex2 = it[1];
+            adj[vertex1].push_back(vertex2);
+            adj[vertex2].push_back(vertex1); 
+        }
+        int count = 0;
+        for(int i=0;i<n;i++){
+            if(visited[i] == 0){
+                count++;
+                bfsOfGraph(i,n,visited,adj);
+            }
+        }
+        return count;
     }
 };
