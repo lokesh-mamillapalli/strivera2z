@@ -4,19 +4,6 @@ using namespace std;
 #define FOR(i, a, b) for(int i = (a); i < (b); i++)
 class Solution {
   public:
-      void dfs(int vertex,int V,vector<vector<int>>&adj,vector<int>&visited,int parent,int&answer){
-        visited[vertex] = 1;
-        for(auto it:adj[vertex]){
-            if(visited[it]==0){
-                dfs(it,V,adj,visited,vertex,answer);
-            }else{
-                if(it != parent){
-                    answer = 1;
-                }
-            }
-        }
-    }
-  
   
     bool isCycle(int V, vector<vector<int>>& edges) {
         int answer = 0;
@@ -28,17 +15,32 @@ class Solution {
             adj[vertex1].push_back(vertex2);
             adj[vertex2].push_back(vertex1); 
         }
+
+        queue<pair<int,int>> q;
+        
         FOR(i,0,V){
             if(visited[i] == 0){
-                dfs(i,V,adj,visited,-1,answer);
+                q.push({i,-1});
+                visited[i] = 1;
+                while(!q.empty()){
+                    int vertex = q.front().first;
+                    int parent = q.front().second;
+                    q.pop();
+                    for(auto it:adj[vertex]){
+                        if(visited[it]==0){
+                            visited[it] = 1;
+                            q.push({it,vertex});
+                        }else{
+                            if(it == parent){
+                            }else{
+                                return true;
+                            }
+                        }
+                    }
+                }
+            
             }
         }
-        if(answer == 1){
-            return true;
-        }else{
-            return false;
-        }
-
-        
+        return false;
     }
 };
